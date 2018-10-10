@@ -26,17 +26,39 @@
 }
 
 #pragma mark - Push
+- (void)enablePush:(CDVInvokedUrlCommand*)command {
+    if (@available(iOS 10.0, *)) {
+        [[UNUserNotificationCenter currentNotificationCenter] requestAuthorizationWithOptions:UNAuthorizationOptionAlert | UNAuthorizationOptionSound | UNAuthorizationOptionBadge
+                                                                            completionHandler:^(BOOL granted, NSError * _Nullable error) {
+                                                                                if (error == nil) {
+                                                                                    if (granted == YES) {
+                                                                                        os_log_info(OS_LOG_DEFAULT, "Authorized for notifications = %s", granted ? "YES" : "NO");
+                                                                                        
+                                                                                        dispatch_async(dispatch_get_main_queue(), ^{
+                                                                                            // we are authorized to use notifications, request a device token for remote notifications
+                                                                                            [[UIApplication sharedApplication] registerForRemoteNotifications];
+                                                                                            [[MarketingCloudSDK sharedInstance] sfmc_setPushEnabled:YES];
+                                                                                        });
+                                                                                        
+                                                                                    }
+                                                                                }
+                                                                            }];
+    } else {
+        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:
+                                                UIUserNotificationTypeBadge |
+                                                UIUserNotificationTypeSound |
+                                                UIUserNotificationTypeAlert
+                                                                                 categories:nil];
+        [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+        [[UIApplication sharedApplication] registerForRemoteNotifications];
+        [[MarketingCloudSDK sharedInstance] sfmc_setPushEnabled:YES];
+    }
+}
     
 - (void)isPushEnabled:(CDVInvokedUrlCommand*)command {
     BOOL success= [[MarketingCloudSDK sharedInstance] sfmc_pushEnabled];
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:success];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-}
-
-- (void)enablePush:(CDVInvokedUrlCommand*)command {
-    [[UIApplication sharedApplication] registerForRemoteNotifications];
-
-    [[MarketingCloudSDK sharedInstance] sfmc_setPushEnabled:YES];
 }
 
 - (void)disablePush:(CDVInvokedUrlCommand*)command {

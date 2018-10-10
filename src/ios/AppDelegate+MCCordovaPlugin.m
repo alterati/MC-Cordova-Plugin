@@ -139,32 +139,9 @@ static NSString * const CURRENT_CORDOVA_VERSION_NAME = @"MC_Cordova_v1.1.0";
                                                             if (@available(iOS 10.0, *)) {
                                                                 // set the delegate if needed then ask if we are authorized - the delegate must be set here if used
                                                                 [UNUserNotificationCenter currentNotificationCenter].delegate = weakSelf;
-                                                                
-                                                                [[UNUserNotificationCenter currentNotificationCenter] requestAuthorizationWithOptions:UNAuthorizationOptionAlert | UNAuthorizationOptionSound | UNAuthorizationOptionBadge
-                                                                                                                                    completionHandler:^(BOOL granted, NSError * _Nullable error) {
-                                                                                                                                        if (error == nil) {
-                                                                                                                                            if (granted == YES) {
-                                                                                                                                                os_log_info(OS_LOG_DEFAULT, "Authorized for notifications = %s", granted ? "YES" : "NO");
-                                                                                                                                                
-                                                                                                                                                dispatch_async(dispatch_get_main_queue(), ^{
-                                                                                                                                                    // we are authorized to use notifications, request a device token for remote notifications
-                                                                                                                                                    [[UIApplication sharedApplication] registerForRemoteNotifications];
-                                                                                                                                                });
-                                                                                                                                                
-                                                                                                                                                [self setDefaultTag];
-                                                                                                                                            }
-                                                                                                                                        }
-                                                                                                                                    }];
+                                                                [self setDefaultTag];
                                                             }
                                                             else {
-                                                                UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:
-                                                                                                        UIUserNotificationTypeBadge |
-                                                                                                        UIUserNotificationTypeSound |
-                                                                                                        UIUserNotificationTypeAlert
-                                                                                                                                         categories:nil];
-                                                                [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
-                                                                [[UIApplication sharedApplication] registerForRemoteNotifications];
-                                                                
                                                                 [self setDefaultTag];
                                                             }
                                                         }
