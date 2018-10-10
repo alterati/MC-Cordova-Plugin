@@ -1,13 +1,12 @@
 package com.salesforce.marketingcloud.cordovaplugin;
 
-import android.text.TextUtils;
 import android.support.v4.util.ArraySet;
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.salesforce.marketingcloud.MCLogListener;
 import com.salesforce.marketingcloud.MCLogListener.AndroidLogListener;
 import com.salesforce.marketingcloud.MarketingCloudSdk;
-import com.salesforce.marketingcloud.MCLogListener;
-import com.salesforce.marketingcloud.registration.Attribute;
 import com.salesforce.marketingcloud.registration.RegistrationManager;
 
 import org.apache.cordova.CallbackContext;
@@ -17,12 +16,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 import java.util.Map;
+import java.util.Set;
 
 @SuppressWarnings("ConstantConditions")
 public class MCCordovaPlugin extends CordovaPlugin {
@@ -46,39 +42,71 @@ public class MCCordovaPlugin extends CordovaPlugin {
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         Log.v(TAG, String.format(Locale.ENGLISH, "EXECUTING ACTION: %s", action));
 
-        switch (action) {
-            case ACTION_GET_SYSTEM_TOKEN:
-                return handleGetSystemToken(callbackContext);
-            case ACTION_ENABLE_PUSH:
-                return handleEnablePush(callbackContext);
-            case ACTION_DISABLE_PUSH:
-                return handleDisablePush(callbackContext);
-            case ACTION_IS_PUSH_ENABLED:
-                return handleIsPushEnabled(callbackContext);
-            case ACTION_SET_ATTRIBUTE:
-                return handleSetAttribute(callbackContext, args);
-            case ACTION_CLEAR_ATTRIBUTE:
-                return handleClearAttribute(callbackContext, args);
-            case ACTION_GET_ATTRIBUTES:
-                return handleGetAttributes(callbackContext);
-            case ACTION_SET_CONTACTKEY:
-                return handleSetContactKey(callbackContext, args);
-            case ACTION_GET_CONTACTKEY:
-                return handleGetContactKey(callbackContext);
-            case ACTION_ADD_TAG:
-                return handleAddTag(callbackContext, args);
-            case ACTION_REMOVE_TAG:
-                return handleRemoveTag(callbackContext, args);
-            case ACTION_GET_TAGS:
-                return handleGetTags(callbackContext);
-            case ACTION_ENABLE_VERBOSE_LOGGING:
-                return handleEnableVerboseLogging(callbackContext);
-            case ACTION_DISABLE_VERBOSE_LOGGING:
-                return handleDisableVerboseLogging(callbackContext);
-            default:
-                callbackContext.error("Invalid action");
-                return false;
+        if (action.equals(ACTION_GET_SYSTEM_TOKEN)) {
+            return handleGetSystemToken(callbackContext);
+        } else if (action.equals(ACTION_GET_SYSTEM_TOKEN)) {
+            return handleEnablePush(callbackContext);
+        } else if (action.equals(ACTION_DISABLE_PUSH)) {
+            return handleDisablePush(callbackContext);
+        } else if (action.equals(ACTION_IS_PUSH_ENABLED)) {
+            return handleIsPushEnabled(callbackContext);
+        } else if (action.equals(ACTION_SET_ATTRIBUTE)) {
+            return handleSetAttribute(callbackContext, args);
+        } else if (action.equals(ACTION_CLEAR_ATTRIBUTE)) {
+            return handleClearAttribute(callbackContext, args);
+        } else if (action.equals(ACTION_GET_ATTRIBUTES)) {
+            return handleGetAttributes(callbackContext);
+        } else if (action.equals(ACTION_SET_CONTACTKEY)) {
+            return handleSetContactKey(callbackContext, args);
+        } else if (action.equals(ACTION_GET_CONTACTKEY)) {
+            return handleGetContactKey(callbackContext);
+        } else if (action.equals(ACTION_ADD_TAG)) {
+            return handleAddTag(callbackContext, args);
+        } else if (action.equals(ACTION_REMOVE_TAG)) {
+            return handleRemoveTag(callbackContext, args);
+        } else if (action.equals(ACTION_GET_TAGS)) {
+            return handleGetTags(callbackContext);
+        } else if (action.equals(ACTION_ENABLE_VERBOSE_LOGGING)) {
+            return handleEnableVerboseLogging(callbackContext);
+        } else if (action.equals(ACTION_DISABLE_VERBOSE_LOGGING)) {
+            return handleDisableVerboseLogging(callbackContext);
+        } else {
+            callbackContext.error("Invalid action");
+            return false;
         }
+        // switch (action) {
+        //     case ACTION_GET_SYSTEM_TOKEN:
+        //         return handleGetSystemToken(callbackContext);
+        //     case ACTION_GET_SYSTEM_TOKEN:
+        //         return handleEnablePush(callbackContext);
+        //     case ACTION_DISABLE_PUSH:
+        //         return handleDisablePush(callbackContext);
+        //     case ACTION_IS_PUSH_ENABLED:
+        //         return handleIsPushEnabled(callbackContext);
+        //     case ACTION_SET_ATTRIBUTE:
+        //         return handleSetAttribute(callbackContext, args);
+        //     case ACTION_CLEAR_ATTRIBUTE:
+        //         return handleClearAttribute(callbackContext, args);
+        //     case ACTION_GET_ATTRIBUTES:
+        //         return handleGetAttributes(callbackContext);
+        //     case ACTION_SET_CONTACTKEY:
+        //         return handleSetContactKey(callbackContext, args);
+        //     case ACTION_GET_CONTACTKEY:
+        //         return handleGetContactKey(callbackContext);
+        //     case ACTION_ADD_TAG:
+        //         return handleAddTag(callbackContext, args);
+        //     case ACTION_REMOVE_TAG:
+        //         return handleRemoveTag(callbackContext, args);
+        //     case ACTION_GET_TAGS:
+        //         return handleGetTags(callbackContext);
+        //     case ACTION_ENABLE_VERBOSE_LOGGING:
+        //         return handleEnableVerboseLogging(callbackContext);
+        //     case ACTION_DISABLE_VERBOSE_LOGGING:
+        //         return handleDisableVerboseLogging(callbackContext);
+        //     default:
+        //         callbackContext.error("Invalid action");
+        //         return false;
+
     }
 
     private boolean handleIsPushEnabled(final CallbackContext callbackContext) {
@@ -315,7 +343,7 @@ public class MCCordovaPlugin extends CordovaPlugin {
                 @Override
                 public void ready(MarketingCloudSdk marketingCloudSdk) {
                     RegistrationManager registrationManager = marketingCloudSdk.getRegistrationManager();
-                    final Set<String> tags = new ArraySet<>(registrationManager.getTags());
+                    final Set<String> tags = new ArraySet(registrationManager.getTags());
                     final JSONArray tagArray = new JSONArray();
                     if (!tags.isEmpty()) {
                         for (String tag : tags) {
@@ -338,9 +366,9 @@ public class MCCordovaPlugin extends CordovaPlugin {
             MarketingCloudSdk.requestSdk(new MarketingCloudSdk.WhenReadyListener() {
                 @Override
                 public void ready(MarketingCloudSdk marketingCloudSdk) {
-                      MarketingCloudSdk.setLogLevel(MCLogListener.VERBOSE);
-                      MarketingCloudSdk.setLogListener(new AndroidLogListener());
-                      callbackContext.success();
+                    MarketingCloudSdk.setLogLevel(MCLogListener.VERBOSE);
+                    MarketingCloudSdk.setLogListener(new AndroidLogListener());
+                    callbackContext.success();
                 }
             });
         } catch (Exception e) {

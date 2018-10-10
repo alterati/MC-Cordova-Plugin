@@ -43,7 +43,7 @@ public class MCCordovaPluginApplication extends Application {
                 if (status.isUsable()) {
                     RegistrationManager registrationManager = MarketingCloudSdk.getInstance().getRegistrationManager();
                     RegistrationManager.Editor registrationEditor = registrationManager.edit();
-                    Set<String> tags = new TreeSet<>(registrationManager.getTags());
+                    Set<String> tags = new TreeSet(registrationManager.getTags());
                     if (!tags.isEmpty()) {
                         for (String tag : tags) {
                             if (!tag.equals(CURRENT_CORDOVA_VERSION_NAME) && tag.startsWith("MC_Cordova_v")) {
